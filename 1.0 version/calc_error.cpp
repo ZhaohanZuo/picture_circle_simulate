@@ -15,11 +15,11 @@ circledata calc_error(int rows,int cols,Mat carvan){
 	outp.g = g / 65535;
 	outp.r = r / 65535;
 	circle(tempcar, Point(outp.x, outp.y), outp.rad, 
-		Scalar(outp.b, outp.g, outp.r), -1);//Ëæ»ú»­Ô²
-	absdiff(tempcar, carvan, outp.diff);//¼ÆËãdiff
+		Scalar(outp.b, outp.g, outp.r), -1);//Ã‹Ã¦Â»ÃºÂ»Â­Ã”Â²
+	absdiff(tempcar, carvan, outp.diff);//Â¼Ã†Ã‹Ã£diff
 	outp.diff = outp.diff.mul(outp.diff);
 	s = sum(outp.diff);
 	outp.err = (s.val[0] + s.val[1] + s.val[2]) /
-		(carvan.total() * carvan.channels());//¼ÆËãmse
+		(carvan.total() * carvan.channels());//Â¼Ã†Ã‹Ã£mse
 	return outp;
 }
