@@ -5,25 +5,25 @@ pair<double, Mat> mse(Mat carvan, Mat tempcar, Mat diff, double err,
 	unsigned int totalpix = 0;
 	Mat newdiff = diff.clone();
 	Mat mask = Mat::zeros(carvan.size(), CV_8UC1);
-	circle(mask, Point(x, y), rad, Scalar(255), -1);//Éú³ÉÑÚÂë
-	Rect rect = boundingRect(mask);//¹¹Ôì×îÐ¡¾ØÐÎ
-	for (int y = rect.y;y < rect.y + rect.height;y++) {//»ñÈ¡Í¼ÏñµØÖ·
+	circle(mask, Point(x, y), rad, Scalar(255), -1);//ç”ŸæˆæŽ©ç 
+	Rect rect = boundingRect(mask);//æž„é€ æœ€å°çŸ©å½¢
+	for (int y = rect.y;y < rect.y + rect.height;y++) {//èŽ·å–å›¾åƒåœ°å€
 		const uchar* maskrow = mask.ptr<uchar>(y);
 		const float* carvanrow = carvan.ptr<float>(y);
 		const float* tempcarrow = tempcar.ptr<float>(y);
 		float* newdiffrow = newdiff.ptr<float>(y);
 		for (int x = rect.x;x < rect.x + rect.width;x++) {
-			if (maskrow[x]) {//ÅÐ¶Ï¸ÃÏñËØÊÇ·ñ±»¸üÐÂ
+			if (maskrow[x]) {//åˆ¤æ–­è¯¥åƒç´ æ˜¯å¦è¢«æ›´æ–°
 				int idx = x * 3;
-				olderr += newdiffrow[idx] + newdiffrow[idx + 1] + newdiffrow[idx + 2];//¼ÆËãÔ­Îó²î
+				olderr += newdiffrow[idx] + newdiffrow[idx + 1] + newdiffrow[idx + 2];//è®¡ç®—åŽŸè¯¯å·®
 				float err0 = carvanrow[idx] - tempcarrow[idx];
 				float err1 = carvanrow[idx + 1] - tempcarrow[idx + 1];
 				float err2 = carvanrow[idx + 2] - tempcarrow[idx + 2];
-				newdiffrow[idx] = err0 * err0;//¸üÐÂdiff
+				newdiffrow[idx] = err0 * err0;//æ›´æ–°diff
 				newdiffrow[idx + 1] = err1 * err1;
 				newdiffrow[idx + 2] = err2 * err2;
-				newerr += err0 * err0 + err1 * err1 + err2 * err2;//¼ÆËãÐÂÎó²î
-				totalpix++;//¼ÆËã¸üÐÂÏñËØÊý
+				newerr += err0 * err0 + err1 * err1 + err2 * err2;//è®¡ç®—æ–°è¯¯å·®
+				totalpix++;//è®¡ç®—æ›´æ–°åƒç´ æ•°
 			}
 		}
 	}
