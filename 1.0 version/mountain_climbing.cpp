@@ -2,7 +2,7 @@
 circledata climb(circledata cir, Mat carvan) {
 	circledata newcir;
 	Mat tempcar = carvan.clone();
-	random_device rd;//Ëæ»úÊıÉú³É
+	random_device rd;//éšæœºæ•°ç”Ÿæˆ
 	mt19937 engine(rd());
 	uniform_int_distribution<int> dist(-6, 6);
 	uniform_int_distribution<int> dist1(0, 6);
@@ -12,16 +12,16 @@ circledata climb(circledata cir, Mat carvan) {
 	int delta_x = dist(engine);
 	int delta_y = dist(engine);
 	int delta_rad = dist1(engine);
-	newcir.x = cir.x + delta_x;//Î¢µ÷Ô²
+	newcir.x = cir.x + delta_x;//å¾®è°ƒåœ†
 	newcir.y = cir.y + delta_y;
 	newcir.b = cir.b + delta_b;
 	newcir.g = cir.g + delta_g;
 	newcir.r = cir.r + delta_r;
 	newcir.rad = cir.rad + delta_rad;
 	circle(tempcar, Point(newcir.x, newcir.y), newcir.rad,
-		Scalar(newcir.b, newcir.g, newcir.r),-1);//»­³öĞÂÔ²
+		Scalar(newcir.b, newcir.g, newcir.r),-1);//ç”»å‡ºæ–°åœ†
 	auto result = mse(carvan, tempcar, cir.diff, cir.err,
-		newcir.x, newcir.y, newcir.rad);//¼ÆËãĞÂÔ²mse
+		newcir.x, newcir.y, newcir.rad);//è®¡ç®—æ–°åœ†mse
 	newcir.err = result.first;
 	newcir.diff = result.second;
 	return newcir;
