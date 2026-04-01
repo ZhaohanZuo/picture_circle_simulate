@@ -8,7 +8,7 @@ using namespace cv;
 int main() {
 	int cirnum, rows, cols;
 	vector<circledata> cir;
-	vector<double> circle_processing_times;//¼ÆÊ±
+	vector<double> circle_processing_times;//è®¡æ—¶
 	if (!(cin >> cirnum) || cirnum <= 0) {
 		cerr << "Failed to read cirnum." << endl;
 		return -1;
@@ -40,9 +40,9 @@ int main() {
 	//		if (cir.size() > keepCount) {
 	//			cir.resize(keepCount);
 	//		}
-	//#pragma omp parallel for shared(carvan, img ,cir)//¿ªÊ¼²¢ĞĞ²¢½«Á½¸öMat¶ÔÏó¸³¸øÃ¿¸öÏß³Ì
+	//#pragma omp parallel for shared(carvan, img ,cir)//å¼€å§‹å¹¶è¡Œå¹¶å°†ä¸¤ä¸ªMatå¯¹è±¡èµ‹ç»™æ¯ä¸ªçº¿ç¨‹
 	//		for (int index = 0; index < cir.size(); ++index) {
-	//			circledata local_best = cir[index];//¶¨ÒåÏß³ÌÄÚ´æ´¢±äÁ¿
+	//			circledata local_best = cir[index];//å®šä¹‰çº¿ç¨‹å†…å­˜å‚¨å˜é‡
 	//			circledata tempcir_local;
 	//			for (int step = 0; step < climbCount; ++step) {
 	//				tempcir_local = climb(local_best, carvan, img);
@@ -60,12 +60,12 @@ int main() {
 		cout << "=== Processing Circle " << (i + 1) << " / " << cirnum << " ===" << endl;
 		cir.clear();
 		cout << "  Generating initial candidates..." << flush;
-		double start_time = static_cast<double>(cv::getTickCount());//¼ÆÊ±Æğµã
+		double start_time = static_cast<double>(cv::getTickCount());//è®¡æ—¶èµ·ç‚¹
 #pragma omp parallel 
-		{//¿ªÊ¼²¢ĞĞÔËËã
-			vector<circledata> cir_private;//´´½¨Ïß³ÌË½ÓĞ±äÁ¿
+		{//å¼€å§‹å¹¶è¡Œè¿ç®—
+			vector<circledata> cir_private;//åˆ›å»ºçº¿ç¨‹ç§æœ‰å˜é‡
 			circledata tempcir_private;
-#pragma omp for nowait//²¢ĞĞÖ´ĞĞforÑ­»·
+#pragma omp for nowait//å¹¶è¡Œæ‰§è¡Œforå¾ªç¯
 			for (int j = 0; j < 180; j++) {
 				circledata cd = calc_error(rows, cols, carvan, img);
 				if (cd.rad <= 0 || cd.x < 0 || cd.x >= cols || cd.y < 0 || cd.y >= rows) {
@@ -80,7 +80,7 @@ int main() {
 				}
 			}
 #pragma omp critical
-			{//½«²¢ĞĞ½á¹ûºÏ²¢Ğ´Èë
+			{//å°†å¹¶è¡Œç»“æœåˆå¹¶å†™å…¥
 				cir.insert(cir.end(), cir_private.begin(), cir_private.end());
 			}
 		}
@@ -103,15 +103,15 @@ int main() {
 		const circledata& best = cir.front();
 		if (best.rad > 0) {
 			//Mat mask = Mat::zeros(carvan.size(), CV_8UC1);
-			//circle(mask, Point(best.x, best.y), best.rad, Scalar(255), -1);//Éú³ÉÑÚÂë
+			//circle(mask, Point(best.x, best.y), best.rad, Scalar(255), -1);//ç”Ÿæˆæ©ç 
 			//Rect rect = boundingRect(mask);
-			//for (int y = rect.y;y < rect.y + rect.height;y++) {//½øĞĞalphaµş¼Ó
+			//for (int y = rect.y;y < rect.y + rect.height;y++) {//è¿›è¡Œalphaå åŠ 
 			//	if (y < 0 || y >= carvan.rows) continue;
 			//	const uchar* maskrow = mask.ptr<uchar>(y);
 			//	float* carvanrow = carvan.ptr<float>(y);
 			//	for (int x = rect.x;x < rect.x + rect.width;x++) {
 			//		if (x < 0 || x >= carvan.cols) continue;
-			//		if (maskrow[x]) {//ÅĞ¶Ï¸ÃÏñËØÊÇ·ñÔÚÔ²ÉÏ
+			//		if (maskrow[x]) {//åˆ¤æ–­è¯¥åƒç´ æ˜¯å¦åœ¨åœ†ä¸Š
 			//			int idx = x * 3;
 			//			carvanrow[idx] = best.b * best.alpha + carvanrow[idx] * (1 - best.alpha);
 			//			carvanrow[idx + 1] = best.g * best.alpha + carvanrow[idx + 1] * (1 - best.alpha);
@@ -127,7 +127,7 @@ int main() {
 			double radf = static_cast<double>(best.rad);
 			double rad_sq = radf * radf;
 			double minus_alpha = 1.0f - best.alpha;
-			for (int y = y_min;y <= y_max;y++) {//»ñÈ¡Í¼ÏñµØÖ·
+			for (int y = y_min;y <= y_max;y++) {//è·å–å›¾åƒåœ°å€
 				//const uchar* maskrow = mask.ptr<uchar>(y);
 				//const float* imgrow = img.ptr<float>(y);
 				double* carvan_row = carvan.ptr<double>(y);
@@ -135,36 +135,36 @@ int main() {
 				for (int x = x_min;x <= x_max;x++) {
 					double dx = static_cast<double>(x - best.x);
 					double dy = static_cast<double>(y - best.y);
-					if (dx * dx + dy * dy < rad_sq) {//ÅĞ¶Ï¸ÃÏñËØÊÇ·ñ±»¸üĞÂ
+					if (dx * dx + dy * dy < rad_sq) {//åˆ¤æ–­è¯¥åƒç´ æ˜¯å¦è¢«æ›´æ–°
 						int idx = x * 3;
 						carvan_row[idx] = best.b * best.alpha + carvan_row[idx] * minus_alpha;
 						carvan_row[idx + 1] = best.g * best.alpha + carvan_row[idx + 1] * minus_alpha;
 						carvan_row[idx + 2] = best.r * best.alpha + carvan_row[idx + 2] * minus_alpha;
-						//olderr += newdiffrow[idx] + newdiffrow[idx + 1] + newdiffrow[idx + 2];//¼ÆËãÔ­Îó²î
+						//olderr += newdiffrow[idx] + newdiffrow[idx + 1] + newdiffrow[idx + 2];//è®¡ç®—åŸè¯¯å·®
 						//float err0 = imgrow[idx] - expect_b;
 						//float err1 = imgrow[idx + 1] - expect_g;
 						//float err2 = imgrow[idx + 2] - expect_r;
-						//newdiffrow[idx] = err0 * err0;//¸üĞÂdiff
+						//newdiffrow[idx] = err0 * err0;//æ›´æ–°diff
 						//newdiffrow[idx + 1] = err1 * err1;
 						//newdiffrow[idx + 2] = err2 * err2;
-						//err += err0 * err0 + err1 * err1 + err2 * err2;//¼ÆËãĞÂÎó²î
+						//err += err0 * err0 + err1 * err1 + err2 * err2;//è®¡ç®—æ–°è¯¯å·®
 					}
 				}
 			}
 		}
 		//Mat diff;
-		//absdiff(carvan, img, diff);//¼ÆËãdiff
+		//absdiff(carvan, img, diff);//è®¡ç®—diff
 		//diff = diff.mul(diff);
 		//Scalar s = sum(diff);
 		//double final_err = (s.val[0] + s.val[1] + s.val[2]) /
-		//	(carvan.total() * carvan.channels());//¼ÆËãmse
+		//	(carvan.total() * carvan.channels());//è®¡ç®—mse
 		cout << "  Best found: x=" << best.x << ", y=" << best.y
 			<< ", rad=" << best.rad << ", err=" << best.err << ", b="
 			<< best.b * 65535 << ", g=" << best.g * 65535 << ", r=" << best.r * 65535 << ", alpha="
 			<< best.alpha << endl;
 		cir.clear();
-		double end_time = static_cast<double>(cv::getTickCount());//¼ÆÊ±½áÊø
-		double elapsed_time = (end_time - start_time) / cv::getTickFrequency();//¼ÆËãÓÃÊ±
+		double end_time = static_cast<double>(cv::getTickCount());//è®¡æ—¶ç»“æŸ
+		double elapsed_time = (end_time - start_time) / cv::getTickFrequency();//è®¡ç®—ç”¨æ—¶
 		cout << "  Time taken for Circle " << (i + 1) << ": "
 			<< elapsed_time * 1000.0 << " ms" << endl;
 		circle_processing_times.push_back(elapsed_time);
